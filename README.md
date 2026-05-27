@@ -22,6 +22,18 @@ python -m uvicorn app.main:app --reload
 
 El servidor se levanta en `http://localhost:8000`.
 
+## Interfaz web
+
+La ruta raíz (`/`) muestra una vista simple con un botón en la esquina superior derecha para alternar modo claro/oscuro.
+
+Modo claro:
+
+![Modo claro](docs/images/home-light.png)
+
+Modo oscuro:
+
+![Modo oscuro](docs/images/home-dark.png)
+
 ## Endpoints
 
 | Método   | Ruta            | Descripción                                      |
