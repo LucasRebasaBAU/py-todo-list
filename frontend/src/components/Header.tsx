@@ -13,7 +13,7 @@ export function Header({ isDark, onToggleDark }: HeaderProps) {
         <CheckSquare className="h-6 w-6 text-primary" />
         <h1 className="text-2xl font-bold tracking-tight">Todo List</h1>
         <div className="ml-auto">
-          <Button variant="ghost" size="icon" onClick={onToggleDark} aria-label="Toggle dark mode">
+          <Button variant="ghost" size="icon" onClick={onToggleDark} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}>
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
         </div>

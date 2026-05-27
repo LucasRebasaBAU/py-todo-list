@@ -14,7 +14,11 @@ export function useDarkMode() {
     } else {
       root.classList.remove("dark")
     }
-    localStorage.setItem("darkMode", String(isDark))
+    try {
+      localStorage.setItem("darkMode", String(isDark))
+    } catch {
+      // localStorage may be unavailable (e.g. private browsing or storage full)
+    }
   }, [isDark])
 
   const toggle = () => setIsDark((prev) => !prev)
