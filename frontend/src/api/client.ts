@@ -1,9 +1,34 @@
 import axios from "axios"
-import type { Todo, TodoCreate, TodoUpdate } from "./types"
+import type { Todo, TodoCreate, TodoUpdate, AuthCredentials, TokenResponse } from "./types"
 
 const api = axios.create({
   baseURL: "http://localhost:8000",
 })
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token")
+  if (token) {
+    config.headers.Authorization = "Bearer " + token
+  }
+  return config
+})
+
+export async function login(credentials: AuthCredentials): Promise<TokenResponse> {
+  const params = new URLSearchParams()
+  params.append("username", credentials.username)
+  params.append("password", credentials.password)
+  const { data } = await api.post<TokenResponse>("/auth/login", params, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  })
+  return data
+}
+
+export async function register(credentials: AuthCredentials): Promise<void> {
+  await api.post("/auth/register", {
+    username: credentials.username,
+    password: credentials.password,
+  })
+}
 
 export async function fetchTodos(completed?: boolean): Promise<Todo[]> {
   const params = completed !== undefined ? { completed } : {}
