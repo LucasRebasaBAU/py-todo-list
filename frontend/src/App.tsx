@@ -6,12 +6,14 @@ import { TodoForm } from "@/components/TodoForm"
 import { Button } from "@/components/ui/button"
 import { Plus, Loader2 } from "lucide-react"
 import { useTodos, useCreateTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/useTodos"
+import { useDarkMode } from "@/hooks/useDarkMode"
 import type { Todo } from "@/api/types"
 
 function App() {
   const [filter, setFilter] = useState<FilterValue>("all")
   const [formOpen, setFormOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
+  const { isDark, toggle: toggleDark } = useDarkMode()
 
   const { data: todos = [], isLoading } = useTodos()
   const createTodo = useCreateTodo()
@@ -62,7 +64,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header isDark={isDark} onToggleDark={toggleDark} />
       <main className="container mx-auto max-w-2xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <FilterBar value={filter} onChange={setFilter} />
