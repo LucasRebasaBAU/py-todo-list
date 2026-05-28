@@ -20,7 +20,7 @@ class Todo(Base):
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str | None] = mapped_column(String, nullable=True)
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
-    priority: Mapped[str] = mapped_column(
+    priority: Mapped[Priority] = mapped_column(
         Enum(Priority), default=Priority.MEDIA, nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
