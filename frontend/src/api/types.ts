@@ -17,3 +17,13 @@ export interface TodoUpdate {
   description?: string | null
   completed?: boolean
 }
+
+export interface AuthCredentials {
+  username: string
+  password: string
+}
+
+export interface TokenResponse {
+  access_token: string
+  token_type: string
+}

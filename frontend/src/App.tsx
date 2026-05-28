@@ -3,12 +3,15 @@ import { Header } from "@/components/Header"
 import { FilterBar, type FilterValue } from "@/components/FilterBar"
 import { TodoList } from "@/components/TodoList"
 import { TodoForm } from "@/components/TodoForm"
+import { LoginPage } from "@/components/LoginPage"
 import { Button } from "@/components/ui/button"
 import { Plus, Loader2 } from "lucide-react"
 import { useTodos, useCreateTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/useTodos"
+import { useAuth } from "@/hooks/useAuth"
 import type { Todo } from "@/api/types"
 
 function App() {
+  const { isAuthenticated, login, register, logout, isLoading: authLoading, error: authError } = useAuth()
   const [filter, setFilter] = useState<FilterValue>("all")
   const [formOpen, setFormOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
@@ -60,9 +63,20 @@ function App() {
     if (!formOpen) setEditingTodo(null)
   }, [formOpen])
 
+  if (!isAuthenticated) {
+    return (
+      <LoginPage
+        onLogin={login}
+        onRegister={register}
+        isLoading={authLoading}
+        error={authError}
+      />
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onLogout={logout} />
       <main className="container mx-auto max-w-2xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <FilterBar value={filter} onChange={setFilter} />
