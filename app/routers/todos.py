@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Todo
+from app.models import Priority, Todo
 from app.schemas import TodoCreate, TodoResponse, TodoUpdate
 
 router = APIRouter(prefix="/todos", tags=["todos"])
@@ -13,11 +13,14 @@ router = APIRouter(prefix="/todos", tags=["todos"])
 @router.get("/", response_model=list[TodoResponse])
 def list_todos(
     completed: bool | None = None,
+    priority: Priority | None = None,
     db: Session = Depends(get_db),
 ):
     query = db.query(Todo)
     if completed is not None:
         query = query.filter(Todo.completed == completed)
+    if priority is not None:
+        query = query.filter(Todo.priority == priority)
     return query.all()
 
 

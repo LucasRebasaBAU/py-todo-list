@@ -1,12 +1,14 @@
 import axios from "axios"
-import type { Todo, TodoCreate, TodoUpdate } from "./types"
+import type { Todo, TodoCreate, TodoUpdate, Priority } from "./types"
 
 const api = axios.create({
   baseURL: "http://localhost:8000",
 })
 
-export async function fetchTodos(completed?: boolean): Promise<Todo[]> {
-  const params = completed !== undefined ? { completed } : {}
+export async function fetchTodos(completed?: boolean, priority?: Priority): Promise<Todo[]> {
+  const params: Record<string, string | boolean> = {}
+  if (completed !== undefined) params.completed = completed
+  if (priority !== undefined) params.priority = priority
   const { data } = await api.get<Todo[]>("/todos/", { params })
   return data
 }

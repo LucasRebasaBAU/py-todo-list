@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react"
 import { Header } from "@/components/Header"
-import { FilterBar, type FilterValue } from "@/components/FilterBar"
+import { FilterBar, type FilterValue, type PriorityFilterValue } from "@/components/FilterBar"
 import { TodoList } from "@/components/TodoList"
 import { TodoForm } from "@/components/TodoForm"
 import { Button } from "@/components/ui/button"
 import { Plus, Loader2 } from "lucide-react"
 import { useTodos, useCreateTodo, useUpdateTodo, useDeleteTodo } from "@/hooks/useTodos"
-import type { Todo } from "@/api/types"
+import type { Todo, Priority } from "@/api/types"
 
 function App() {
   const [filter, setFilter] = useState<FilterValue>("all")
+  const [priorityFilter, setPriorityFilter] = useState<PriorityFilterValue>("all")
   const [formOpen, setFormOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
 
@@ -19,8 +20,9 @@ function App() {
   const deleteTodo = useDeleteTodo()
 
   const filteredTodos = todos.filter((todo) => {
-    if (filter === "pending") return !todo.completed
-    if (filter === "completed") return todo.completed
+    if (filter === "pending" && todo.completed) return false
+    if (filter === "completed" && !todo.completed) return false
+    if (priorityFilter !== "all" && todo.priority !== priorityFilter) return false
     return true
   })
 
@@ -37,16 +39,17 @@ function App() {
     deleteTodo.mutate(id)
   }
 
-  const handleFormSubmit = (data: { title: string; description: string }) => {
+  const handleFormSubmit = (data: { title: string; description: string; priority: Priority }) => {
     if (editingTodo) {
       updateTodo.mutate({
         id: editingTodo.id,
-        data: { title: data.title, description: data.description || null },
+        data: { title: data.title, description: data.description || null, priority: data.priority },
       })
     } else {
       createTodo.mutate({
         title: data.title,
         description: data.description || null,
+        priority: data.priority,
       })
     }
   }
@@ -65,7 +68,12 @@ function App() {
       <Header />
       <main className="container mx-auto max-w-2xl px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <FilterBar value={filter} onChange={setFilter} />
+          <FilterBar
+            value={filter}
+            onChange={setFilter}
+            priorityValue={priorityFilter}
+            onPriorityChange={setPriorityFilter}
+          />
           <Button onClick={() => setFormOpen(true)} className="gap-1.5">
             <Plus className="h-4 w-4" />
             New Task

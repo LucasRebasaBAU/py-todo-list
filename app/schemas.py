@@ -2,16 +2,20 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
+from app.models import Priority
+
 
 class TodoCreate(BaseModel):
     title: str
     description: str | None = None
+    priority: Priority = Priority.MEDIA
 
 
 class TodoUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
     completed: bool | None = None
+    priority: Priority | None = None
 
 
 class TodoResponse(BaseModel):
@@ -19,6 +23,7 @@ class TodoResponse(BaseModel):
     title: str
     description: str | None
     completed: bool
+    priority: Priority
     created_at: datetime
     updated_at: datetime
 
